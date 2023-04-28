@@ -19,6 +19,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+    @yield('styles')
 
 </head>
 
@@ -43,6 +44,12 @@
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
+                <a class="nav-link" href="{{ route('projects.create') }}">
+                    <i class="fas fa-plus"></i>
+                    <span>Dodaj projekt</span></a>
+                <a class="nav-link" href="{{ route('projects.index') }}">
+                    <i class="fas fa-th-list"></i>
+                    <span>Projekty</span></a>
             </li>
 
             <!-- Divider -->
