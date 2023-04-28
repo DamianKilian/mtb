@@ -22,11 +22,11 @@
                                         <div class="text-center">
                                             <div class="h1 fw-light">Nowy projekt</div>
                                         </div>
-                                        <form id="projectForm" action="{{ route('projects.store') }}" method="POST">
+                                        <form enctype="multipart/form-data" id="projectForm" action="{{ route('projects.store') }}" method="POST">
                                             @csrf
                                             <!-- Name Input -->
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="name" name="name" type="text"
+                                                <input value="{{old('name')}}" class="form-control" id="name" name="name" type="text"
                                                     placeholder="Name" />
                                                 <label for="name">Name</label>
                                                 @error('name')
@@ -38,7 +38,7 @@
 
                                             <!-- Start date Input -->
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="start-date" name="startDate" type="date"
+                                                <input value="{{old('startDate')}}" class="form-control" id="start-date" name="startDate" type="date"
                                                     placeholder="Start date" />
                                                 <label for="start-date">Start date</label>
                                                 @error('startDate')
@@ -50,7 +50,7 @@
 
                                             <!-- Stop date Input -->
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="stop-date" name="stopDate" type="date"
+                                                <input value="{{old('startDate')}}" class="form-control" id="stop-date" name="stopDate" type="date"
                                                     placeholder="Stop date" />
                                                 <label for="stop-date">Stop date</label>
                                                 @error('stopDate')
@@ -62,10 +62,10 @@
 
                                             <!-- Message Input -->
                                             <div class="form-floating mb-3">
-                                                <textarea class="form-control" id="message" name="message" type="text" placeholder="Message"
+                                                <textarea value="{{old('message')}}" class="form-control" id="message" name="message" type="text" placeholder="Message"
                                                     style="height: 10rem;"></textarea>
                                                 <label for="message">Message</label>
-                                                @error('stopDate')
+                                                @error('message')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -77,6 +77,11 @@
                                                 <input class="form-control" id="image" name="image" type="file"
                                                     placeholder="Stop date" />
                                                 <label for="image">Image</label>
+                                                @error('image')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </div>
 
                                             <!-- Submit success message -->
