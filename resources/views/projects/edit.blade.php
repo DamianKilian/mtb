@@ -20,14 +20,16 @@
                                 <div class="card border-0 rounded-3 shadow-lg">
                                     <div class="card-body p-4">
                                         <div class="text-center">
-                                            <div class="h1 fw-light">Nowy projekt</div>
+                                            <div class="h1 fw-light">Edytuj projekt</div>
                                         </div>
-                                        <form enctype="multipart/form-data" id="projectForm" action="{{ route('projects.store') }}" method="POST">
+                                        <form enctype="multipart/form-data" id="projectForm"
+                                            action="{{ route('projects.update', $project->id) }}" method="POST">
+                                            @method('PUT')
                                             @csrf
                                             <!-- Name Input -->
                                             <div class="form-floating mb-3">
-                                                <input value="{{old('name')}}" class="form-control" id="name" name="name" type="text"
-                                                    placeholder="Name" />
+                                                <input value="{{ $project->name }}" class="form-control" id="name"
+                                                    name="name" type="text" placeholder="Name" />
                                                 <label for="name">Name</label>
                                                 @error('name')
                                                     <span class="invalid-feedback" role="alert">
@@ -38,8 +40,8 @@
 
                                             <!-- Start date Input -->
                                             <div class="form-floating mb-3">
-                                                <input value="{{old('startDate')}}" class="form-control" id="start-date" name="startDate" type="date"
-                                                    placeholder="Start date" />
+                                                <input value="{{ $project->start_date }}" class="form-control" id="start-date"
+                                                    name="startDate" type="date" placeholder="Start date" />
                                                 <label for="start-date">Start date</label>
                                                 @error('startDate')
                                                     <span class="invalid-feedback" role="alert">
@@ -50,8 +52,8 @@
 
                                             <!-- Stop date Input -->
                                             <div class="form-floating mb-3">
-                                                <input value="{{old('stopDate')}}" class="form-control" id="stop-date" name="stopDate" type="date"
-                                                    placeholder="Stop date" />
+                                                <input value="{{ $project->stop_date }}" class="form-control" id="stop-date"
+                                                    name="stopDate" type="date" placeholder="Stop date" />
                                                 <label for="stop-date">Stop date</label>
                                                 @error('stopDate')
                                                     <span class="invalid-feedback" role="alert">
@@ -62,8 +64,8 @@
 
                                             <!-- Message Input -->
                                             <div class="form-floating mb-3">
-                                                <textarea value="{{old('message')}}" class="form-control" id="message" name="message" type="text" placeholder="Message"
-                                                    style="height: 10rem;"></textarea>
+                                                <textarea class="form-control" id="message" name="message" type="text"
+                                                    placeholder="Message" style="height: 10rem;">{{ $project->message }}</textarea>
                                                 <label for="message">Message</label>
                                                 @error('message')
                                                     <span class="invalid-feedback" role="alert">

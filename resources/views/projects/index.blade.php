@@ -40,58 +40,50 @@
                                                         aria-label="Name: activate to sort column descending">Name</th>
                                                     <th class="sorting" tabindex="0" aria-controls="dataTable"
                                                         rowspan="1" colspan="1" style="width: 104px;"
-                                                        aria-label="Position: activate to sort column ascending">Position
+                                                        aria-label="Position: activate to sort column ascending">Start date
                                                     </th>
                                                     <th class="sorting" tabindex="0" aria-controls="dataTable"
                                                         rowspan="1" colspan="1" style="width: 60px;"
-                                                        aria-label="Office: activate to sort column ascending">Office</th>
+                                                        aria-label="Office: activate to sort column ascending">Stop date
+                                                    </th>
                                                     <th class="sorting" tabindex="0" aria-controls="dataTable"
                                                         rowspan="1" colspan="1" style="width: 31px;"
-                                                        aria-label="Age: activate to sort column ascending">Age</th>
+                                                        aria-label="Age: activate to sort column ascending">Image</th>
                                                     <th class="sorting" tabindex="0" aria-controls="dataTable"
                                                         rowspan="1" colspan="1" style="width: 71px;"
-                                                        aria-label="Start date: activate to sort column ascending">Start
-                                                        date</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="dataTable"
-                                                        rowspan="1" colspan="1" style="width: 67px;"
-                                                        aria-label="Salary: activate to sort column ascending">Salary</th>
+                                                        aria-label="Start date: activate to sort column ascending">actions
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tfoot>
                                                 <tr>
                                                     <th rowspan="1" colspan="1">Name</th>
-                                                    <th rowspan="1" colspan="1">Position</th>
-                                                    <th rowspan="1" colspan="1">Office</th>
-                                                    <th rowspan="1" colspan="1">Age</th>
                                                     <th rowspan="1" colspan="1">Start date</th>
-                                                    <th rowspan="1" colspan="1">Salary</th>
+                                                    <th rowspan="1" colspan="1">Stop date</th>
+                                                    <th rowspan="1" colspan="1">Image</th>
+                                                    <th rowspan="1" colspan="1">actions</th>
                                                 </tr>
                                             </tfoot>
                                             <tbody>
-                                                <tr class="odd">
-                                                    <td class="sorting_1">Airi Satou</td>
-                                                    <td>Accountant</td>
-                                                    <td>Tokyo</td>
-                                                    <td>33</td>
-                                                    <td>2008/11/28</td>
-                                                    <td>$162,700</td>
-                                                </tr>
-                                                <tr class="even">
-                                                    <td class="sorting_1">Angelica Ramos</td>
-                                                    <td>Chief Executive Officer (CEO)</td>
-                                                    <td>London</td>
-                                                    <td>47</td>
-                                                    <td>2009/10/09</td>
-                                                    <td>$1,200,000</td>
-                                                </tr>
+                                                @foreach ($projects as $project)
+                                                    <tr>
+                                                        <td>{{ $project->name }}</td>
+                                                        <td>{{ $project->start_date }}</td>
+                                                        <td>{{ $project->stop_date }}</td>
+                                                        <td><img src="{{ url($project->image) }}"></td>
+                                                        <td class="has-text-right">
+                                                            <a class="btn" href="{{ route('projects.edit', $project->id) }}">{{ __('Edit project') }}</a><br>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12 col-md-5">
-                                        <div class="dataTables_info" id="dataTable_info" role="status"
-                                            aria-live="polite">Showing 1 to 10 of 57 entries</div>
+                                        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
+                                            Showing 1 to 10 of 57 entries</div>
                                     </div>
                                     <div class="col-sm-12 col-md-7">
                                         <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
