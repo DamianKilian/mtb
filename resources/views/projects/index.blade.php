@@ -65,14 +65,30 @@
                                                 </tr>
                                             </tfoot>
                                             <tbody>
+                                                @php
+                                                    $projectsData = [];
+                                                @endphp
                                                 @foreach ($projects as $project)
                                                     <tr>
                                                         <td>{{ $project->name }}</td>
                                                         <td>{{ $project->start_date }}</td>
                                                         <td>{{ $project->stop_date }}</td>
-                                                        <td><img src="{{ url($project->image) }}"></td>
+                                                        <td><img src="{{ url('storage/' . $project->image) }}"></td>
                                                         <td class="has-text-right">
-                                                            <a class="btn" href="{{ route('projects.edit', $project->id) }}">{{ __('Edit project') }}</a><br>
+                                                            <a class="btn"
+                                                                href="{{ route('projects.edit', $project->id) }}">{{ __('Edit project') }}</a><br>
+                                                            @php
+                                                                $projectsData[$project->id] = [
+                                                                    'routes' => [
+                                                                        'destroy' => route('projects.destroy', ['project' => $project->id]),
+                                                                        'email' => route('projects.email', ['project' => $project->id]),
+                                                                    ],
+                                                                ];
+                                                            @endphp
+
+                                                            <span class="react-actions"
+                                                                data-id="{{ $project->id }}"></span>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -124,4 +140,11 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scriptsUp')
+    <script>
+        window.projectsData = @json($projectsData);
+        window.csrf = "{{ csrf_token() }}";
+    </script>
 @endsection

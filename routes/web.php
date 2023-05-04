@@ -24,7 +24,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
+    Route::post('/projects/email/{project}', [ProjectController::class, 'projectsEmail'])->name('projects.email');
 });
 
 Route::middleware('auth')->resource('projects', ProjectController::class)->except([

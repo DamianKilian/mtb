@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProjectSent;
 use App\Models\Project as ModelsProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -65,7 +67,7 @@ class ProjectController extends Controller
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollback();
-                Storage::delete('public/' . $project->image);
+                Storage::disk('public')->delete($project->image);
                 throw $e;
             }
         }else{
@@ -78,7 +80,7 @@ class ProjectController extends Controller
     {
         $fileName = $file->getClientOriginalName();
         $name = pathinfo($fileName, PATHINFO_FILENAME) . '-' . $file->hashName();
-        $path = 'storage/' . $file->storeAs(
+        $path = $file->storeAs(
             'projects/' . date("Y"),
             $name,
             'public'
@@ -106,7 +108,6 @@ class ProjectController extends Controller
     public function edit($id)
     {
         $project = ModelsProject::findOrFail($id);
-        $this->authorize('update', $project);
         return view('projects.edit', [
             'project' => $project,
         ]);
@@ -129,7 +130,6 @@ class ProjectController extends Controller
             'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
         $project = ModelsProject::findOrFail($id);
-        $this->authorize('update', $project);
         $project->name = $request->name;
         $project->start_date = $request->startDate;
         $project->stop_date = $request->stopDate;
@@ -142,7 +142,7 @@ class ProjectController extends Controller
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollback();
-                Storage::delete('public/' . $project->image);
+                Storage::disk('public')->delete($project->image);
                 throw $e;
             }
         }else{
@@ -159,6 +159,27 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $project = ModelsProject::findOrFail($id);
+        Storage::disk('public')->delete($project->image);
+        $project->delete();
+        return redirect()->route('projects.index');
+    }
+
+    /**
+     * Send product email.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function projectsEmail(Request $request, $id)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+        $project = ModelsProject::findOrFail($id);
+        // dd(111);//mmmyyy
+        Mail::to($request->email)->send(new ProjectSent($project));
+
+        return true;
     }
 }
