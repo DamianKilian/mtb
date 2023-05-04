@@ -17,10 +17,31 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Auth::user()->projects()->orderBy('id', 'desc')->paginate(3);
-        // dd($projects);//mmmyyy
+        if ($request->productFilter) {
+            $projects = Auth::user()->projects()->orderBy('id', 'desc')
+                ->where(function ($projects) use ($request) {
+                    if ($request->name) {
+                        $projects->where('name', 'like', "%$request->name%");
+                    }
+                    if ($request->startDateFrom) {
+                        $projects->where('start_date', '>=', $request->startDateFrom);
+                    }
+                    if ($request->startDateTo) {
+                        $projects->where('start_date', '<=', $request->startDateTo);
+                    }
+                    if ($request->stopDateFrom) {
+                        $projects->where('stop_date', '>=', $request->stopDateFrom);
+                    }
+                    if ($request->stopDateTo) {
+                        $projects->where('stop_date', '<=', $request->stopDateTo);
+                    }
+                });
+        } else {
+            $projects = Auth::user()->projects()->orderBy('id', 'desc');
+        }
+        $projects = $projects->paginate(3);
         return view('projects.index', [
             'projects' => $projects,
         ]);
@@ -59,7 +80,7 @@ class ProjectController extends Controller
         $project->message = $request->message;
         $project->user_id = auth()->user()->id;
 
-        if($file = $request->file('image')){
+        if ($file = $request->file('image')) {
             $project->image = $this->uploadImage($file, $request);
             try {
                 DB::beginTransaction();
@@ -70,7 +91,7 @@ class ProjectController extends Controller
                 Storage::disk('public')->delete($project->image);
                 throw $e;
             }
-        }else{
+        } else {
             $project->save();
         }
         return redirect()->route('projects.index');
@@ -134,7 +155,7 @@ class ProjectController extends Controller
         $project->start_date = $request->startDate;
         $project->stop_date = $request->stopDate;
         $project->message = $request->message;
-        if($file = $request->file('image')){
+        if ($file = $request->file('image')) {
             $project->image = $this->uploadImage($file, $request);
             try {
                 DB::beginTransaction();
@@ -145,7 +166,7 @@ class ProjectController extends Controller
                 Storage::disk('public')->delete($project->image);
                 throw $e;
             }
-        }else{
+        } else {
             $project->save();
         }
         return redirect()->route('projects.index');

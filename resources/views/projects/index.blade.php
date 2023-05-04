@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-sm-12 col-md-6">
                                         <div class="dataTables_length" id="dataTable_length"><label>Show <select
                                                     name="dataTable_length" aria-controls="dataTable"
@@ -25,6 +25,54 @@
                                         <div id="dataTable_filter" class="dataTables_filter"><label>Search:<input
                                                     type="search" class="form-control form-control-sm" placeholder=""
                                                     aria-controls="dataTable"></label></div>
+                                    </div>
+                                </div> --}}
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <form id="filter">
+                                            @csrf
+                                            <!-- Name Input -->
+                                            <input type="hidden" name="productFilter" value="1" />
+                                            <div class="form-floating mb-3">
+                                                <input value="{{ Request::get('name') }}" class="form-control"
+                                                    id="name" name="name" type="text" placeholder="Name" />
+                                            </div>
+                                            <hr />
+                                            <!-- Start date Input -->
+                                            Start date<br>
+                                            from
+                                            <div class="form-floating mb-3">
+                                                <input value="{{ Request::get('startDateFrom') }}" class="form-control"
+                                                    id="start-date" name="startDateFrom" type="date"
+                                                    placeholder="Start date" />
+                                            </div>
+                                            to
+                                            <div class="form-floating mb-3">
+                                                <input value="{{ Request::get('startDateTo') }}" class="form-control"
+                                                    id="start-date" name="startDateTo" type="date"
+                                                    placeholder="Start date" />
+                                            </div>
+                                            <hr />
+                                            <!-- Stop date Input -->
+                                            Stop date<br>
+                                            from
+                                            <div class="form-floating mb-3">
+                                                <input value="{{ Request::get('stopDateFrom') }}" class="form-control"
+                                                    id="stop-date" name="stopDateFrom" type="date"
+                                                    placeholder="Stop date" />
+                                            </div>
+                                            to
+                                            <div class="form-floating mb-3">
+                                                <input value="{{ Request::get('stopDateTo') }}" class="form-control"
+                                                    id="stop-date" name="stopDateTo" type="date"
+                                                    placeholder="Stop date" />
+                                            </div>
+
+                                            <!-- Submit button -->
+                                            <div class="d-grid">
+                                                <button class="btn btn-primary btn-lg" type="submit">Filter</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -98,7 +146,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12 col-md-5">
-                                        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
+                                        <div class="dataTables_info" id="dataTable_info" role="status"
+                                            aria-live="polite">
                                             Showing 1 to 10 of 57 entries</div>
                                     </div>
                                     <div class="col-sm-12 col-md-7">
