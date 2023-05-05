@@ -71,6 +71,8 @@
                                             <!-- Submit button -->
                                             <div class="d-grid">
                                                 <button class="btn btn-primary btn-lg" type="submit">Filter</button>
+                                                <button class="btn btn-secondary btn-lg" type="submit" name="export" value="pdf">Pdf export</button>
+                                                <button class="btn btn-info btn-lg" type="submit" name="export" value="xlsl">XLSl export</button>
                                             </div>
                                         </form>
                                     </div>

@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Mpdf\Mpdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectController extends Controller
 {
@@ -17,7 +20,7 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, Mpdf $mpdf)
     {
         if ($request->productFilter) {
             $projects = Auth::user()->projects()->orderBy('id', 'desc')
@@ -38,6 +41,16 @@ class ProjectController extends Controller
                         $projects->where('stop_date', '<=', $request->stopDateTo);
                     }
                 });
+            if ('pdf' === $request->export) {
+                $mpdf->WriteHTML($this->htmlTableString($projects->get()));
+                $mpdf->Output();
+            }
+            if ('xlsl' === $request->export) {
+                Storage::delete('products.xlsx');
+                $writer = new Xlsx($this->spreadsheet($projects->get()));
+                $writer->save('../storage/app/products.xlsx');
+                return Storage::download('products.xlsx', 'products');
+            }
         } else {
             $projects = Auth::user()->projects()->orderBy('id', 'desc');
         }
@@ -45,6 +58,63 @@ class ProjectController extends Controller
         return view('projects.index', [
             'projects' => $projects,
         ]);
+    }
+
+    public function spreadsheet($projects)
+    {
+        $spreadsheet = new Spreadsheet();
+        $activeWorksheet = $spreadsheet->getActiveSheet();
+
+        $activeWorksheet->setCellValue('A1', 'Name');
+        $activeWorksheet->setCellValue('B1', 'Start date');
+        $activeWorksheet->setCellValue('C1', 'Stop date');
+        $activeWorksheet->setCellValue('D1', 'Image');
+        $row = 1;
+        foreach ($projects as $project) {
+            $row++;
+            $imgUrl = '';
+            if ($project->image) {
+                $imgUrl = url('storage/' . $project->image);
+            }
+            $activeWorksheet->setCellValue('A'.$row, $project->name);
+            $activeWorksheet->setCellValue('B'.$row, $project->start_date);
+            $activeWorksheet->setCellValue('C'.$row, $project->stop_date);
+            $activeWorksheet->setCellValue('D'.$row, $imgUrl);
+        }
+        return $spreadsheet;
+    }
+
+    public function htmlTableString($projects)
+    {
+        $tbody = '';
+        foreach ($projects as $project) {
+            $img = '';
+            if ($project->image) {
+                $img = "<img src=" . url('storage/' . $project->image) . ">";
+            }
+            $tbody .= '<tr>';
+            $tbody .= '<td>' . $project->name . '</td>';
+            $tbody .= '<td>' . $project->start_date . '</td>';
+            $tbody .= '<td>' . $project->stop_date . '</td>';
+            $tbody .= '<td>' . $img . '</td>';
+            $tbody .= '</tr>';
+        }
+        $htmlTableString = <<<END
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Start date</th>
+                    <th>Stop date</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                $tbody
+            </tbody>
+        </table>
+        END;
+        return $htmlTableString;
     }
 
     /**
